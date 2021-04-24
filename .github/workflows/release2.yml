@@ -72,13 +72,14 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} 
+          upload_url: ${{ needs.create-release.outputs.upload_url }} 
           asset_path: ./target/${{ matrix.target }}/release/${{ steps.make-artifact.outputs.name }}
           asset_name: zellij-v${{ github.event.release.tag_name }}-${{matrix.target}}.tar.gz
           asset_content_type: application/octet-stream
   create-release:
-    name: create-release
     runs-on: ubuntu-latest
+    outputs: 
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
     steps:
       - name: create_release 
         id: create_release
