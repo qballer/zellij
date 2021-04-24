@@ -78,6 +78,7 @@ jobs:
           asset_content_type: application/octet-stream
   create-release:
     name: create-release
+    runs-on: ubuntu-latest
     steps:
       - name: create_release 
         id: create_release
