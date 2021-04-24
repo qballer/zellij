@@ -67,14 +67,22 @@ jobs:
           name="zellij-${GITHUB_REF#refs/tags/}-${{ matrix.target }}.tar.gz"
           tar cvfz "${name}" "zellij"
           echo "::set-output name=name::${name}"
-      
+     - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: true
+          prerelease: false 
       - name: Upload release archive
         uses: actions/upload-release-asset@v1.0.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          # upload_url: ${{ steps.create_release.outputs.upload_url }} 
-          upload_url: ${{ github.event.release.upload_url }}
+          upload_url: ${{ steps.create_release.outputs.upload_url }} 
           asset_path: ./target/${{ matrix.target }}/release/${{ steps.make-artifact.outputs.name }}
           asset_name: zellij-v${{ github.event.release.tag_name }}-${{matrix.target}}.tar.gz
           asset_content_type: application/octet-stream
